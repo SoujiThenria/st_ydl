@@ -12,7 +12,12 @@ void config::read(std::string _file)
     int temp = 0;
     while (std::getline(conf_file, line))
     {
-        if (line.at(0) == '#')
+        if (line.at(0) == '>')
+        {
+            command = line;
+            command.erase(0, 1);
+        }
+        else if (line.at(0) == '#')
         {
             if (temp != 0)
             {
