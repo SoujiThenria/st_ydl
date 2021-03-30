@@ -7,7 +7,7 @@ int main(int argc, const char **argv)
 {
     if (argc != 2)
     {
-        std::cout << "Error: Unexpected number of cli arguments." << std::endl;
+        std::cout << "Error: Unexpected number of arguments." << std::endl;
         exit(EXIT_FAILURE);
     }
     
