@@ -21,7 +21,7 @@ int main(int argc, const char **argv)
         for (unsigned int j = 1; j < (unsigned)conf._data[i].size(); ++j)
         {
             std::string P1 = "/usr/local/bin/youtube-dl -i --download-archive \"$DIR_PATH/downloaded.txt\" --no-post-overwrites "
-                            "-f 'bestvideo[ext=mp4, vcodec^=avc1]+bestaudio[ext=m4a]/bestvideo+bestaudio' --merge-output-format mp4 \"$SAVE_ID\" -o \"$DIR_PATH/%(title)s.%(ext)s\"";
+                            "-f 'bestvideo[ext=mp4, vcodec!^=av0]+bestaudio[ext=m4a]/bestvideo+bestaudio' --merge-output-format mp4 \"$SAVE_ID\" -o \"$DIR_PATH/%(title)s.%(ext)s\"";
             if (conf.command.length() != 0)
                 P1 = conf.command;
             conf.replace(&P1,"$DIR_PATH", conf._data[i][0]);
