@@ -37,6 +37,8 @@ https://whateverlink2.com
 https://anotherlink.com
 ````
 
+Empty lines and lines that dont start with a ">"(for the command), "#"(for the path) or "h"(for the http(s) request) are ignored. 
+
 You have to create the directories by your own if they don't exists. And then you have to run the program with the path to your created file.  
 
 `/usr/local/bin/st_ydl /home/yourfile.txt`
@@ -44,9 +46,9 @@ You have to create the directories by your own if they don't exists. And then yo
 ## Info
 The command you specified in the file is optional, if none is specified, the following command is executed:   
 ```
-/usr/local/bin/youtube-dl -i --download-archive "$DIR_PATH/downloaded.txt\" --no-post-overwrites -f 'bestvideo[ext=mp4, vcodec^=avc1]+bestaudio[ext=m4a]/bestvideo+bestaudio' --merge-output-format mp4 "$SAVE_ID" -o "$DIR_PATH/%(title)s.%(ext)s"
+/usr/local/bin/youtube-dl -i --download-archive "$DIR_PATH/downloaded.txt\" --no-post-overwrites -f 'bestvideo[ext=mp4, vcodec!^=av0]+bestaudio[ext=m4a]/bestvideo+bestaudio' --merge-output-format mp4 "$SAVE_ID" -o "$DIR_PATH/%(title)s.%(ext)s"
 ```
-This command downloads the video(s) in to `$DIR_PATH`, removes the video id from the file name, saves the video id in `$DIR_PATH/download.txt`. The best mp4 video (that dont have the avc1 codec) and the best m4a audio file gets downloaded and merched with e.g. *ffmpeg*.
+This command downloads the video(s) in to `$DIR_PATH`, removes the video id from the file name, saves the video id in `$DIR_PATH/download.txt`. The best mp4 video (that dont have the av01 codec) and the best m4a audio file gets downloaded and merched with e.g. *ffmpeg*.
 
 If you want to specifi your own command, keep in mind that `$DIR_PATH` and `$SAVE_ID` are replaced with the path and the links from the specified file.  
 
