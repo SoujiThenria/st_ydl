@@ -1,0 +1,2 @@
+// the configured options and settings for Tutorial
+#define ST_YDL_VERSION "${RELEASE_SERVICE_VERSION}"
