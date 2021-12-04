@@ -1,35 +1,38 @@
+/*
+    Includes all needed values to execute yt-dlp for one link + the systemcall to execute yt-dlp
+*/
+
 #ifndef __YDL_DATA_HPP__
 #define __YDL_DATA_HPP__
 
 #include <string>
+#include <filesystem>
 
 using namespace std;
 
 class YDLdata
 {
-    friend ostream &operator<<(ostream &input, const YDLdata &a);
 public:
     #if _WIN32
-        YDLdata(string _path, string _link, string _command = "youtube-dl -q -i --download-archive \"$Download_Path/downloaded.txt\" --no-post-overwrites "
-                                "-f \"bestvideo[ext=mp4, vcodec!^=av0]+bestaudio[ext=m4a]/bestvideo+bestaudio\" --merge-output-format mp4 "
-                                "\"$Video_ID\" -o \"$Download_Path/%(title)s.%(ext)s\"");
+        YDLdata(filesystem::path _path, string _link, string _command = "yt-dlp -q -i --download-archive \"$Download_Path/downloaded.txt\" --no-post-overwrites -f "
+                                "\"bestvideo[vcodec!^=av0]+bestaudio\" --merge-output-format mp4 \"$Video_ID\" -o \"$Download_Path/%(title)s.%(ext)s\" 2>NUL");
     #endif
     #if __unix__
-        YDLdata(string _path, string _link, string _command = "youtube-dl -q -i --download-archive \"$Download_Path/downloaded.txt\" --no-post-overwrites "
-                                "-f 'bestvideo[ext=mp4, vcodec!^=av0]+bestaudio[ext=m4a]/bestvideo+bestaudio' --merge-output-format mp4 "
-                                "\"$Video_ID\" -o \"$Download_Path/%(title)s.%(ext)s\"");
+        YDLdata(filesystem::path _path, string _link, string _command = "yt-dlp -q -i --download-archive \"$Download_Path/downloaded.txt\" --no-post-overwrites -f "
+                                "'bestvideo[vcodec!^=av0]+bestaudio' --merge-output-format mp4 \"$Video_ID\" -o \"$Download_Path/%(title)s.%(ext)s\" 2>/dev/null");
     #endif
     
-    // Execute a system call [system()] with the command.
+    // Execute a system call [system()] with the command variable.
     void download();
 
+    // returns the link
+    string get_Link();
+    
 private:
-    // Replaces the variables in the "command"-string with the "path" and "link". [throw]
+    // Replaces the variables in the "command"-string with the "path" and "link". [throws "invalid_argument" if one of both variables was not found]
     void replace();
-    // Creates the download path if not existing. [throw]
-    void test_obj();
 
-    string path;
+    filesystem::path path;
     string link;
     string command;
 };

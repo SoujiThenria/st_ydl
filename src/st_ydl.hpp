@@ -1,8 +1,12 @@
+/*
+    Reads the file and creates for every (valid) link a "ydl_data" object and stores it in the vector "data"
+*/
+
 #ifndef __ST_YDL_HPP__
 #define __ST_YDL_HPP__
 
 #include <string>
-#include <vector>
+#include <map>
 
 using namespace std;
 
@@ -14,21 +18,24 @@ public:
     STydl(string _file);
     ~STydl();
 
-     
-    // Downloads everything that was specified in the file (excluding commented out lines).
-    void download_all();
+    // Returns the number of all Downloads to be executed.
+    int get_all_downloads();
 
-    // Returns the number of Downloads to be executed.
-    int operator~() const;
     // Downloads the i link.
-    void operator[](unsigned int i) const;
+    // void operator[](unsigned int i);
+
+    void printProgress(bool firstRun);
+
+    void download_multithreading(int _threads_to_use);
 
 private:
     // Reads the file "file_name" and creates appropriate YDLdata-objects and pushes them in the "data" vector.
     void read_file();
 
     string file_name;
-    vector<YDLdata *> data;
+
+    // 2-Queued 1-Downloading 0-Finished
+    map<YDLdata *, int> progress;
 };
 
 

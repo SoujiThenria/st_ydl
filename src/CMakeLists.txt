@@ -16,7 +16,8 @@ target_include_directories(st_ydl PUBLIC
         "${PROJECT_BINARY_DIR}"
         )
 
-install(
-    TARGETS st_ydl
-    DESTINATION "/usr/local/bin/"
+install(TARGETS st_ydl
+    CONFIGURATIONS Release
+    # CMAKE_INSTALL_PREFIX is default set to /usr/local
+    DESTIONATION "local/bin/"
 )

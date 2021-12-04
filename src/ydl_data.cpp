@@ -1,28 +1,44 @@
 #include "ydl_data.hpp"
 
 #include <iostream>
-#include <filesystem>
 
 using namespace std;
 
 
-YDLdata::YDLdata(string _path, string _link, string _command)
+YDLdata::YDLdata(filesystem::path _path, string _link, string _command)
 : path(_path), link(_link), command(_command)
-{}
-
-void YDLdata::download()
 {
     try
     {
-        test_obj();
         replace();
-        system(command.c_str());   
+        filesystem::create_directories(path);
     }
-    catch(const string &s)
+    catch(const invalid_argument &inv_a)
     {
-        cerr << "Error:\t" << s << endl;
+        cerr << "Invalid argument ERROR:\n\t" << inv_a.what() << endl;
         exit(EXIT_FAILURE);
     }
+    catch(const filesystem::filesystem_error &fe)
+    {
+        cerr << fe.what() << endl
+             << fe.path1() << endl;
+        exit(EXIT_FAILURE);
+    }
+    catch(const exception &exc)
+    {
+        cerr << "Exception ERROR:\n\t" << exc.what() << endl;
+        exit(EXIT_FAILURE);
+    }
+    catch(...)
+    {
+        cerr << "Unknown ERROR:\n\tWhile trying to start 'yt-dlp' for:\n\tCommand: " + command + "\n\tLink: " + link;
+        exit(EXIT_FAILURE);
+    }
+}
+
+void YDLdata::download()
+{
+    system(command.c_str());
 }
 
 void YDLdata::replace()
@@ -37,12 +53,14 @@ void YDLdata::replace()
     // Replace "Download_Path"
     for (size_t index = 0; (index = command.find(Download_Path)) != string::npos;)
     {
-        command.replace(index, Download_Path.size(), path);
+        command.replace(index, Download_Path.size(), path.string());
         replace_test = true;
     }
     
     if (!replace_test)
-        throw "No variable '" + Download_Path + "' in the command";
+    {
+        throw invalid_argument("The required variable '" + Download_Path + "' was not found in the specified command (" + command + ")\n\tfor the link: " + link);
+    }
     
     replace_test = false;
 
@@ -54,25 +72,13 @@ void YDLdata::replace()
     }
 
     if (!replace_test)
-        throw "No variable '" + Video_ID + "' in the command";
+    {
+        throw invalid_argument("The required variable '" + Video_ID + "' was not found in the specified command (" + command + ")");
+    }
 }
 
-void YDLdata::test_obj()
+string YDLdata::get_Link()
 {
-    if (path.empty())
-        throw "There is no path set for this Link: " + link;
-
-    if (!filesystem::is_directory(path))
-        if (!filesystem::create_directory(path))
-            throw "Could not create missing directory " + path;
-
+    return link;
 }
 
-ostream &operator<<(ostream &input, const YDLdata &a)
-{
-    input << "Path: " << a.path << endl
-          << "Link: " << a.link << endl
-          << "Command: " << a.command << endl;
-
-    return input;
-}
